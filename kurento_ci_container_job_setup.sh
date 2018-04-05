@@ -124,13 +124,13 @@ CONTAINER_TEST_FILES=/opt/test-files
 JENKINS_CONTAINER=$(docker inspect -f '{{.Id}}' jenkins)
 
 # Download or update test files
-[ -d /var/lib/jenkins/test-files ] && mkdir -p /var/lib/jenkins/test-files
+[ -d /var/jenkins_home/test-files ] && mkdir -p /var/jenkins_home/test-files
 docker run \
   --rm \
   --name $BUILD_TAG-TEST-FILES-$(date +"%s") \
   --volumes-from $JENKINS_CONTAINER \
   -v $KURENTO_SCRIPTS_HOME:$CONTAINER_ADM_SCRIPTS \
-  -v /var/lib/jenkins/test-files:$CONTAINER_TEST_FILES \
+  -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
   -w $CONTAINER_TEST_FILES \
   kurento/svn-client:1.0.0 \
   /opt/adm-scripts/kurento_update_test_files.sh || {
@@ -198,7 +198,7 @@ docker run \
   $([ "$DETACHED" = "true" ] && echo "-d" || echo "--rm") \
   --volumes-from $JENKINS_CONTAINER \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  -v /var/lib/jenkins/test-files:$CONTAINER_TEST_FILES \
+  -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
   -v $KURENTO_SCRIPTS_HOME:$CONTAINER_ADM_SCRIPTS \
   -v $WORKSPACE$([ -n "$PROJECT_DIR" ] && echo "/$PROJECT_DIR"):$CONTAINER_WORKSPACE \
   $([ -f "$MAVEN_SETTINGS" ] && echo "-v $MAVEN_SETTINGS:$CONTAINER_MAVEN_SETTINGS") \
