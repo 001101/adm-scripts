@@ -133,7 +133,7 @@ docker run \
   -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
   -w $CONTAINER_TEST_FILES \
   kurento/svn-client:1.0.0 \
-  /opt/adm-scripts/kurento_update_test_files.sh || {
+  $CONTAINER_ADM_SCRIPTS/kurento_update_test_files.sh || {
     echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
     exit $?
   }
@@ -271,7 +271,7 @@ docker run \
   -u "root" \
   -w "$CONTAINER_WORKSPACE" \
     $CONTAINER_IMAGE \
-      /opt/adm-scripts/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
+      $CONTAINER_ADM_SCRIPTS/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
 status=$?
 
 # Change worspace ownership to avoid permission errors caused by docker usage of root
