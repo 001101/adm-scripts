@@ -134,7 +134,7 @@ docker run \
   -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
   -w $CONTAINER_TEST_FILES \
   kurento/svn-client:1.0.0 \
-  ls $CONTAINER_ADM_SCRIPTS/kurento_update_test_files.sh
+  ls $KURENTO_SCRIPTS_HOME/kurento_update_test_files.sh
 #  $CONTAINER_ADM_SCRIPTS/kurento_update_test_files.sh || {
 #    echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
 #    exit $?
