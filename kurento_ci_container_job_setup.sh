@@ -263,7 +263,8 @@ docker run \
   -u "root" \
   -w "$CONTAINER_WORKSPACE" \
     $CONTAINER_IMAGE \
-      $KURENTO_SCRIPTS_HOME/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
+    sleep 100
+      #$KURENTO_SCRIPTS_HOME/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
 status=$?
 
 # Change worspace ownership to avoid permission errors caused by docker usage of root
