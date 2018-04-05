@@ -137,7 +137,6 @@ docker run \
     exit $?
   }
 
-exit 1
 # Verify if Mongo container must be started
 if [ "$START_MONGO_CONTAINER" == 'true' ]; then
     MONGO_CONTAINER_ID=$(docker run -d \
