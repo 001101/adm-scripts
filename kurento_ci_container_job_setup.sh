@@ -91,7 +91,7 @@ CONTAINER_HTTP_CERT=/opt/http.crt
 CONTAINER_HTTP_KEY=/opt/http.key
 CONTAINER_MAVEN_LOCAL_REPOSITORY=/root/.m2
 export CONTAINER_MAVEN_SETTINGS=$MAVEN_SETTINGS
-export CONTAINER_TEST_CONFIG_JSON=viewer.conf.json
+export CONTAINER_TEST_CONFIG_JSON=$WORKSPACE/viewer.conf.json
 #CONTAINER_ADM_SCRIPTS=/opt/adm-scripts
 CONTAINER_GIT_CONFIG=/root/.gitconfig
 CONTAINER_GNUPG_KEY=/opt/gnupg_key
@@ -263,8 +263,7 @@ docker run \
   -u "root" \
   -w "$CONTAINER_WORKSPACE" \
     $CONTAINER_IMAGE \
-    sleep 100
-      #$KURENTO_SCRIPTS_HOME/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
+      $KURENTO_SCRIPTS_HOME/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
 status=$?
 
 # Change worspace ownership to avoid permission errors caused by docker usage of root
