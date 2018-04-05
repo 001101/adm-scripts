@@ -120,11 +120,15 @@ CONTAINER_TEST_FILES=/opt/test-files
 [ -d $WORKSPACE/tmp ] || mkdir -p $WORKSPACE/tmp
 [ -d $MAVEN_LOCAL_REPOSITORY ] || mkdir -p $MAVEN_LOCAL_REPOSITORY
 
+# We need now the ID of Jenkins container
+JENKINS_CONTAINER=$(docker inspect -f '{{.Id}}' jenkins)
+
 # Download or update test files
 [ -d /var/lib/jenkins/test-files ] && mkdir -p /var/lib/jenkins/test-files
 docker run \
   --rm \
   --name $BUILD_TAG-TEST-FILES-$(date +"%s") \
+  --volumes-from $JENKINS_CONTAINER \
   -v $KURENTO_SCRIPTS_HOME:$CONTAINER_ADM_SCRIPTS \
   -v /var/lib/jenkins/test-files:$CONTAINER_TEST_FILES \
   -w $CONTAINER_TEST_FILES \
@@ -192,6 +196,7 @@ MAVEN_OPTIONS+=" -Dwdm.chromeDriverUrl=http://chromedriver.kurento.org/"
 docker run \
   --name $BUILD_TAG-JOB_SETUP-$(date +"%s") \
   $([ "$DETACHED" = "true" ] && echo "-d" || echo "--rm") \
+  --volumes-from $JENKINS_CONTAINER \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /var/lib/jenkins/test-files:$CONTAINER_TEST_FILES \
   -v $KURENTO_SCRIPTS_HOME:$CONTAINER_ADM_SCRIPTS \
