@@ -130,15 +130,12 @@ docker run \
   --rm \
   --name $BUILD_TAG-TEST-FILES-$(date +"%s") \
   --volumes-from $JENKINS_CONTAINER \
-  -e "CONTAINER_ADM_SCRIPTS=$KURENTO_SCRIPTS_HOME" \
-  -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
   -w $CONTAINER_TEST_FILES \
   kurento/svn-client:1.0.0 \
-  ls $KURENTO_SCRIPTS_HOME/kurento_update_test_files.sh
-#  $CONTAINER_ADM_SCRIPTS/kurento_update_test_files.sh || {
-#    echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
-#    exit $?
-#  }
+  $CONTAINER_ADM_SCRIPTS/kurento_update_test_files.sh || {
+    echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
+    exit $?
+  }
 
 exit 1
 # Verify if Mongo container must be started
@@ -195,8 +192,6 @@ docker run \
   $([ "$DETACHED" = "true" ] && echo "-d" || echo "--rm") \
   --volumes-from $JENKINS_CONTAINER \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
-  -v $KURENTO_SCRIPTS_HOME:$CONTAINER_ADM_SCRIPTS \
   -v $WORKSPACE$([ -n "$PROJECT_DIR" ] && echo "/$PROJECT_DIR"):$CONTAINER_WORKSPACE \
   $([ -f "$MAVEN_SETTINGS" ] && echo "-v $MAVEN_SETTINGS:$CONTAINER_MAVEN_SETTINGS") \
   -v $WORKSPACE/tmp:$CONTAINER_WORKSPACE/tmp \
@@ -273,7 +268,7 @@ docker run \
   -u "root" \
   -w "$CONTAINER_WORKSPACE" \
     $CONTAINER_IMAGE \
-      $CONTAINER_ADM_SCRIPTS/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
+      $KURENTO_SCRIPTS_HOME/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
 status=$?
 
 # Change worspace ownership to avoid permission errors caused by docker usage of root
