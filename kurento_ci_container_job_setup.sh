@@ -124,7 +124,6 @@ CONTAINER_TEST_FILES=/opt/test-files
 JENKINS_CONTAINER=$(docker inspect -f '{{.Id}}' jenkins)
 
 # Download or update test files
-echo KURENTO-SCRIPTS-HOME $KURENTO_SCRIPTS_HOME
 [ -d /var/jenkins_home/test-files ] && mkdir -p /var/jenkins_home/test-files
 docker run \
   --rm \
@@ -132,7 +131,7 @@ docker run \
   --volumes-from $JENKINS_CONTAINER \
   -w $CONTAINER_TEST_FILES \
   kurento/svn-client:1.0.0 \
-  $CONTAINER_ADM_SCRIPTS/kurento_update_test_files.sh || {
+  $KURENTO_SCRIPTS_HOME/kurento_update_test_files.sh || {
     echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
     exit $?
   }
