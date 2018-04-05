@@ -124,17 +124,17 @@ CONTAINER_TEST_FILES=/opt/test-files
 JENKINS_CONTAINER=$(docker inspect -f '{{.Id}}' jenkins)
 
 # Download or update test files
-#[ -d /var/jenkins_home/test-files ] && mkdir -p /var/jenkins_home/test-files
-#docker run \
-#  --rm \
-#  --name $BUILD_TAG-TEST-FILES-$(date +"%s") \
-#  --volumes-from $JENKINS_CONTAINER \
-#  -w $CONTAINER_TEST_FILES \
-#  kurento/svn-client:1.0.0 \
-  #$KURENTO_SCRIPTS_HOME/kurento_update_test_files.sh || {
-  #  echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
-  #  exit $?
-  #}
+[ -d /var/jenkins_home/test-files ] && mkdir -p /var/jenkins_home/test-files
+docker run \
+  --rm \
+  --name $BUILD_TAG-TEST-FILES-$(date +"%s") \
+  --volumes-from $JENKINS_CONTAINER \
+  -w $CONTAINER_TEST_FILES \
+  kurento/svn-client:1.0.0 \
+  $KURENTO_SCRIPTS_HOME/kurento_update_test_files.sh || {
+    echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
+    exit $?
+  }
 
 # Verify if Mongo container must be started
 if [ "$START_MONGO_CONTAINER" == 'true' ]; then
@@ -263,8 +263,7 @@ docker run \
   -u "root" \
   -w "$CONTAINER_WORKSPACE" \
     $CONTAINER_IMAGE \
-      find
-      #$KURENTO_SCRIPTS_HOME/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
+      $KURENTO_SCRIPTS_HOME/kurento_ci_container_entrypoint.sh $BUILD_COMMAND
 status=$?
 
 # Change worspace ownership to avoid permission errors caused by docker usage of root
