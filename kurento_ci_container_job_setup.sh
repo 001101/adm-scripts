@@ -270,5 +270,5 @@ docker run \
 status=$?
 
 # Change worspace ownership to avoid permission errors caused by docker usage of root
-[ -n "$WORKSPACE" ] && sudo chown -R $(whoami) $WORKSPACE
+[ -n "$WORKSPACE" ] && chown -R $(whoami) $WORKSPACE
 exit $status
