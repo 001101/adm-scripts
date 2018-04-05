@@ -85,19 +85,19 @@ cleanup () {
 }
 
 # Constants
-CONTAINER_WORKSPACE=/opt/kurento
-CONTAINER_GIT_KEY=/opt/git_id_rsa
-CONTAINER_HTTP_CERT=/opt/http.crt
-CONTAINER_HTTP_KEY=/opt/http.key
+CONTAINER_WORKSPACE=/var/jenkins_home/docker_ws/kurento
+CONTAINER_GIT_KEY=/var/jenkins_home/docker_ws/git_id_rsa
+CONTAINER_HTTP_CERT=/var/jenkins_home/docker_ws/http.crt
+CONTAINER_HTTP_KEY=/var/jenkins_home/docker_ws/http.key
 CONTAINER_MAVEN_LOCAL_REPOSITORY=/root/.m2
-CONTAINER_MAVEN_SETTINGS=/opt/kurento-settings.xml
-CONTAINER_TEST_CONFIG_JSON=/opt/scenario.conf.json
-CONTAINER_ADM_SCRIPTS=/opt/adm-scripts
+CONTAINER_MAVEN_SETTINGS=/var/jenkins_home/docker_ws/kurento-settings.xml
+CONTAINER_TEST_CONFIG_JSON=/var/jenkins_home/docker_ws/scenario.conf.json
+CONTAINER_ADM_SCRIPTS=/var/jenkins_home/docker_ws/adm-scripts
 CONTAINER_GIT_CONFIG=/root/.gitconfig
-CONTAINER_GNUPG_KEY=/opt/gnupg_key
+CONTAINER_GNUPG_KEY=/var/jenkins_home/docker_ws/gnupg_key
 CONTAINER_NPM_CONFIG=/root/.npmrc
-CONTAINER_KMS_KEY=/opt/kms_id_rsa
-CONTAINER_TEST_FILES=/opt/test-files
+CONTAINER_KMS_KEY=/var/jenkins_home/docker_ws/kms_id_rsa
+CONTAINER_TEST_FILES=/var/jenkins_home/docker_ws/test-files
 
 # Verify mandatory parameters
 [ -z "$CONTAINER_IMAGE" ] && CONTAINER_IMAGE="kurento/dev-integration:jdk-8-node-0.12"
@@ -161,11 +161,6 @@ if [ "$START_KMS_CONTAINER" == 'true' ]; then
       }
     KMS_AUTOSTART=false
 fi
-
-# Checkout projects if requested
-[ -z "$GERRIT_HOST" ] && GERRIT_HOST=${KURENTO_GIT_REPOSITORY_SERVER%:*}
-[ -z "$GERRIT_PORT" ] && GERRIT_PORT=12345
-[ -z "$GERRIT_USER" ] && GERRIT_USER=$(whoami)
 
 # Set maven options
 MAVEN_OPTIONS+=" -Dtest.kms.docker.image.forcepulling=false"
