@@ -134,13 +134,14 @@ docker run \
   -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
   -w $CONTAINER_TEST_FILES \
   kurento/svn-client:1.0.0 \
-  ls -la $CONTAINER_ADM_SCRIPTS
+  sleep 3600
 #  $CONTAINER_ADM_SCRIPTS/kurento_update_test_files.sh || {
 #    echo "[kurento_ci_container_job_setup] ERROR: Command failed: docker run kurento_update_test_files"
 #    exit $?
 #  }
 #     kurento/svn-client:1.0.0 svn checkout http://files.kurento.org/svn/kurento . || exit
 
+exit 1
 # Verify if Mongo container must be started
 if [ "$START_MONGO_CONTAINER" == 'true' ]; then
     MONGO_CONTAINER_ID=$(docker run -d \
