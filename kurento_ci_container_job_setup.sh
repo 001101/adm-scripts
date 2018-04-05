@@ -90,7 +90,7 @@ CONTAINER_GIT_KEY=/opt/git_id_rsa
 CONTAINER_HTTP_CERT=/opt/http.crt
 CONTAINER_HTTP_KEY=/opt/http.key
 CONTAINER_MAVEN_LOCAL_REPOSITORY=/root/.m2
-CONTAINER_MAVEN_SETTINGS=/opt/kurento-settings.xml
+export CONTAINER_MAVEN_SETTINGS=$MAVEN_SETTINGS
 CONTAINER_TEST_CONFIG_JSON=/opt/scenario.conf.json
 #CONTAINER_ADM_SCRIPTS=/opt/adm-scripts
 CONTAINER_GIT_CONFIG=/root/.gitconfig
@@ -192,7 +192,6 @@ docker run \
   --volumes-from $JENKINS_CONTAINER \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $WORKSPACE$([ -n "$PROJECT_DIR" ] && echo "/$PROJECT_DIR"):$CONTAINER_WORKSPACE \
-  $([ -f "$MAVEN_SETTINGS" ] && echo "-v $MAVEN_SETTINGS:$CONTAINER_MAVEN_SETTINGS") \
   -v $WORKSPACE/tmp:$CONTAINER_WORKSPACE/tmp \
   -v $MAVEN_LOCAL_REPOSITORY:$CONTAINER_MAVEN_LOCAL_REPOSITORY \
   $([ -f "$HTTP_CERT" ] && echo "-v $HTTP_CERT:$CONTAINER_HTTP_CERT") \
