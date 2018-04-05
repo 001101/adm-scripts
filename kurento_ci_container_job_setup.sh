@@ -130,7 +130,7 @@ docker run \
   --rm \
   --name $BUILD_TAG-TEST-FILES-$(date +"%s") \
   --volumes-from $JENKINS_CONTAINER \
-  -e "$CONTAINER_ADM_SCRIPTS=$KURENTO_SCRIPTS_HOME" \
+  -e "CONTAINER_ADM_SCRIPTS=$KURENTO_SCRIPTS_HOME" \
   -v /var/jenkins_home/test-files:$CONTAINER_TEST_FILES \
   -w $CONTAINER_TEST_FILES \
   kurento/svn-client:1.0.0 \
