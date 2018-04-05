@@ -124,6 +124,7 @@ CONTAINER_TEST_FILES=/var/jenkins_home/docker_ws/test-files
 JENKINS_CONTAINER=$(docker inspect -f '{{.Id}}' jenkins)
 
 # Download or update test files
+echo KURENTO-SCRIPTS-HOME $KURENTO_SCRIPTS_HOME
 [ -d /var/jenkins_home/test-files ] && mkdir -p /var/jenkins_home/test-files
 docker run \
   --rm \
