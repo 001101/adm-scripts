@@ -191,9 +191,6 @@ docker run \
   $([ "$DETACHED" = "true" ] && echo "-d" || echo "--rm") \
   --volumes-from $JENKINS_CONTAINER \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  -v $WORKSPACE$([ -n "$PROJECT_DIR" ] && echo "/$PROJECT_DIR"):$CONTAINER_WORKSPACE \
-  -v $WORKSPACE/tmp:$CONTAINER_WORKSPACE/tmp \
-  -v $MAVEN_LOCAL_REPOSITORY:$CONTAINER_MAVEN_LOCAL_REPOSITORY \
   $([ -f "$HTTP_CERT" ] && echo "-v $HTTP_CERT:$CONTAINER_HTTP_CERT") \
   $([ -f "$HTTP_KEY" ] && echo "-v $HTTP_KEY:$CONTAINER_HTTP_KEY") \
   $([ -f "$GIT_KEY" ] && echo "-v $GIT_KEY:$CONTAINER_GIT_KEY" ) \
