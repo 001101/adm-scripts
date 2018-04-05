@@ -187,6 +187,7 @@ MAVEN_OPTIONS+=" -Dwdm.chromeDriverUrl=http://chromedriver.kurento.org/"
 # Create main container
 docker run \
   --name $BUILD_TAG-JOB_SETUP-$(date +"%s") \
+  --net ci-network \
   $([ "$DETACHED" = "true" ] && echo "-d" || echo "--rm") \
   --volumes-from $JENKINS_CONTAINER \
   -v /var/run/docker.sock:/var/run/docker.sock \
