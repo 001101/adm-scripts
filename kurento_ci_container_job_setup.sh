@@ -166,23 +166,27 @@ if [[ "$START_KMS_CONTAINER" == "true" ]]; then
 fi
 
 # Set maven options
-MAVEN_OPTIONS+=" -Dtest.kms.docker.image.forcepulling=false"
+MAVEN_OPTIONS+=" -Dtest.docker.forcepulling=false"
 MAVEN_OPTIONS+=" -Djava.awt.headless=true"
 MAVEN_OPTIONS+=" -Dtest.kms.autostart=$KMS_AUTOSTART"
 MAVEN_OPTIONS+=" -Dtest.kms.scope=$KMS_SCOPE"
 MAVEN_OPTIONS+=" -Dproject.path=$CONTAINER_WORKSPACE$([ -n "$MAVEN_MODULE" ] && echo "/$MAVEN_MODULE")"
 MAVEN_OPTIONS+=" -Dtest.workspace=$CONTAINER_WORKSPACE/tmp"
 MAVEN_OPTIONS+=" -Dtest.workspace.host=$WORKSPACE/tmp"
-MAVEN_OPTIONS+=" -Dtest.files=$CONTAINER_TEST_FILES"
+MAVEN_OPTIONS+=" -Dtest.files.disk=$CONTAINER_TEST_FILES"
 MAVEN_OPTIONS+=" -Dtest.selenium.scope=$SELENIUM_SCOPE"
 MAVEN_OPTIONS+=" -Dtest.selenium.record=$RECORD_TEST"
 
 [ -n "$TEST_GROUP" ] && MAVEN_OPTIONS+=" -Dgroups=$TEST_GROUP"
 [ -n "$TEST_NAME" ] && MAVEN_OPTIONS+=" -Dtest=$TEST_NAME"
 [ -n "$BOWER_RELEASE_URL" ] && MAVEN_OPTIONS+=" -Dbower.release.url=$BOWER_RELEASE_URL"
-[ -n "$KMS_CONTAINER_ID" ] && MAVEN_OPTIONS+=" -Dkms.ws.uri=ws://kms:8888/kurento"
-[ -z "$KMS_CONTAINER_ID" -a -n "$KMS_WS_URI" ] && MAVEN_OPTIONS+=" -Dkms.ws.uri=$KMS_WS_URI"
 [ -n "$SCENARIO_TEST_CONFIG_JSON" ] && MAVEN_OPTIONS+=" -Dtest.config.file=$CONTAINER_TEST_CONFIG_JSON"
+
+if [[ -n "$KMS_CONTAINER_ID" ]]; then
+    MAVEN_OPTIONS+=" -Dkms.ws.uri=ws://kms:8888/kurento"
+elif [[ -n "$KMS_WS_URI" ]]; then
+    MAVEN_OPTIONS+=" -Dkms.ws.uri=$KMS_WS_URI"
+fi
 
 if [[ -z "$TEST_CONTAINER_NAME" ]]; then
   TEST_CONTAINER_NAME="${BUILD_TAG}-JOB_SETUP-$(date '+%s')"
