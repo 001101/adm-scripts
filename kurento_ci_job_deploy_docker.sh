@@ -32,6 +32,19 @@
 #/   This variable can be empty or unset, in which case the default of "dev"
 #/   will be used for nightly repos, or "<Version>" for release repos.
 #/
+#/   Optional. Default: Empty (unset).
+#/
+#/ JOB_VERSION
+#/
+#/   Version number that should be deployed. Only applies for release jobs.
+#/   Normally, the version number is obtained from the package file itself:
+#/   "kurento-media-server_*.deb". However, if this parameter is set, the given
+#/   version number will be deployed.
+#/
+#/   Note that if the version number already exists, the job will fail.
+#/
+#/   Optional. Default: Empty (unset).
+#/
 #/
 #/ * Variable(s) from job Custom Tools (with "Install custom tools"):
 #/
@@ -56,27 +69,24 @@ set -o xtrace
 # Job setup
 # ---------
 
-# Check optional parameters
-if [[ -z "${JOB_DEPLOY_NAME:-}" ]]; then
-    DEPLOY_SPECIAL="false"
-else
-    DEPLOY_SPECIAL="true"
-fi
-
 # Get version number for the deployment
-# shellcheck disable=SC2012
-KMS_DEB_FILE="$(ls -v -1 kurento-media-server_*.deb | tail -n 1)"
-if [[ -z "$KMS_DEB_FILE" ]]; then
-    log "ERROR: Cannot find KMS package file: kurento-media-server_*.deb"
-    exit 1
-fi
-KMS_VERSION="$(
-    dpkg --field "$KMS_DEB_FILE" Version \
-        | grep --perl-regexp --only-matching '^(\d+\.\d+\.\d+)'
-)"
-if [[ -z "$KMS_VERSION" ]]; then
-    log "ERROR: Cannot parse KMS Version field"
-    exit 1
+if [[ -n "${JOB_VERSION:-}" ]]; then
+    KMS_VERSION="$JOB_VERSION"
+else
+    # shellcheck disable=SC2012
+    KMS_DEB_FILE="$(ls -v -1 kurento-media-server_*.deb | tail -n 1)"
+    if [[ -z "$KMS_DEB_FILE" ]]; then
+        log "ERROR: Cannot find KMS package file: kurento-media-server_*.deb"
+        exit 1
+    fi
+    KMS_VERSION="$(
+        dpkg --field "$KMS_DEB_FILE" Version \
+            | grep --perl-regexp --only-matching '^(\d+\.\d+\.\d+)'
+    )"
+    if [[ -z "$KMS_VERSION" ]]; then
+        log "ERROR: Cannot parse KMS Version field"
+        exit 1
+    fi
 fi
 
 # Extract version number components
@@ -89,7 +99,7 @@ if [[ "$JOB_RELEASE" == "true" ]]; then
     log "Deploy release image"
     DOCKER_KMS_VERSION="$VERSION"
     DOCKER_NAME_SUFFIX=""
-elif [[ "$DEPLOY_SPECIAL" == "true" ]]; then
+elif [[ -n "${JOB_DEPLOY_NAME:-}" ]]; then
     log "Deploy experimental feature image"
     DOCKER_KMS_VERSION="$JOB_DEPLOY_NAME"
     DOCKER_NAME_SUFFIX="-exp"
@@ -111,7 +121,7 @@ if [[ "$JOB_RELEASE" == "true" ]]; then
     # Moving tags: "1.2", "1", "latest"
     export TAG="${VERSION}"
     export EXTRA_TAGS="$VERSION_MAJ_MIN $VERSION_MAJ latest"
-elif [[ "$DEPLOY_SPECIAL" == "true" ]]; then
+elif [[ -n "${JOB_DEPLOY_NAME:-}" ]]; then
     # Main tag: "experiment"
     export TAG="${JOB_DEPLOY_NAME}"
     export EXTRA_TAGS=""
